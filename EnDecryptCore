@@ -1,0 +1,45 @@
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+key = "zjrekydnqoluaxmicvpgtfbhws"
+# Alphabet a-z then key is mixed gobbledigook.
+
+def encrypt_message(plaintext, key): # Message Encryption
+    ciphertext = ""
+    for char in plaintext:
+        if alphabet.find(char) > -1:
+            ciphertext += key[alphabet.find(char)]
+        else:
+            ciphertext += char
+    return ciphertext
+
+
+def decrypt_message(ciphertext, key): # Message Decryption
+    decrypted_text = ""
+    for char in ciphertext:
+        if key.find(char) > -1:
+            decrypted_text += alphabet[key.find(char)]
+        else:
+            decrypted_text += char
+    return decrypted_text
+
+
+def main(): # Ensures that user cannot enter less than 1 and more than 20 characters. 
+    print("Welcome to the Encryption System!")
+    while True:
+        input_text = input("What text would you like to encrypt? ")
+        if 1 <= len(input_text) <= 20:
+            break
+        else:
+            print("Warning: Input must be between 1 and 20 characters. Please try again.")
+
+    encrypted_text = encrypt_message(input_text, key)
+    decrypted_text = decrypt_message(encrypted_text, key)
+ # Displays all 3 at once: what was input, what the encrypted text is, then what it is when decrypted.
+    print("Original message: " + input_text)
+    print("Encrypted message: " + encrypted_text)
+    print("Decrypted message: " + decrypted_text)
+
+    return  
+
+
+if __name__ == "__main__":  
+    main()  

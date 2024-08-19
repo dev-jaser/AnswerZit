@@ -1,0 +1,159 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+# IMPORTANT: CANNOT USE GUI IN CODESPACES, DOWNLOAD AND RUN MANUALLY ON YOUR MACHINE
+# IMPORTANT #2: NOT NECESSARY FOR COMPLETION OF PROJECT, CONSIDER IT A BONUS :D
+# Quick thanks for my group, their password generation/Encryption Decryption features were a lot better than the one I made in the lab prior. :)
+# core for password gen and encryption/decrypt keys - both grab from these variables
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+key = "zjrekydnqoluaxmicvpgtfbhws"
+# Encryption/Decryption Program - uses alphabet to encrypt, decryption works flawlessly. 1 character minimum, 20 character maximum.
+def encrypt_message(plaintext, key):
+    ciphertext = ""
+    for char in plaintext:
+        if alphabet.find(char) > -1:
+            ciphertext += key[alphabet.find(char)]
+        else:
+            ciphertext += char
+    return ciphertext
+
+def decrypt_message(ciphertext, key):
+    decrypted_text = ""
+    for char in ciphertext:
+        if key.find(char) > -1:
+            decrypted_text += alphabet[key.find(char)]
+        else:
+            decrypted_text += char
+    return decrypted_text
+
+ # This is our password generation core, includes uppercase, lowercase, numbers and special characters - minimum of 3 characters and maximum of 18.
+def generate_password(length, uppercase, lowercase, numeric, symbol):
+    import random
+    chars = ''
+    if uppercase:
+        chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    if lowercase:
+        chars += 'abcdefghijklmnopqrstuvwxyz'
+    if numeric:
+        chars += '0123456789'
+    if symbol:
+        chars += r'!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~'
+
+    new_password = ''.join(random.choice(chars) for _ in range(length))
+    return new_password
+
+# Tkinter GUI core - App Exits work perfectly on each page. Functions above are added per page, works seemlessly as far as testing has gone.
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Answerzit™'s P.G.E.D.")
+        self.geometry("500x350")
+        self.main_menu()
+
+    def main_menu(self): # Main Menu's block, includes options for Password Gen, Encryption/Decryption and Exit.
+        self.clear_frame()
+        main_frame = ttk.Frame(self)
+        main_frame.pack(pady=50)
+
+        ttk.Label(main_frame, text="Welcome to Answerzit™'s Certified Password Generation, Encryption/Decryption Tool!").pack(pady=10)
+        
+        ttk.Button(main_frame, text="Encryption and Decryption", command=self.encryption_page).pack(pady=5)
+        ttk.Button(main_frame, text="Generate Your Password", command=self.password_generator_page).pack(pady=5)
+        ttk.Button(main_frame, text="Exit App", command=self.exit_app).pack(pady=5)
+
+    def encryption_page(self): # Encryption/Decryption Page - Warns user if less than one character or more than 20. Uses alphabet to encrypt then decrypts same way.
+        self.clear_frame()
+        encryption_frame = ttk.Frame(self)
+        encryption_frame.pack(pady=20)
+
+        ttk.Label(encryption_frame, text="Enter text (1-20 characters):").pack(pady=5)
+        self.input_text = tk.Text(encryption_frame, height=5, width=40)
+        self.input_text.pack(pady=5)
+
+        ttk.Label(encryption_frame, text="Result:").pack(pady=5)
+        self.result_text = tk.Text(encryption_frame, height=5, width=40)
+        self.result_text.pack(pady=5)
+
+        button_frame = ttk.Frame(encryption_frame)
+        button_frame.pack(pady=10)
+
+        ttk.Button(button_frame, text="Encrypt", command=self.encrypt_text).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Decrypt", command=self.decrypt_text).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Main Menu", command=self.main_menu).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Exit App", command=self.exit_app).pack(side=tk.LEFT, padx=5)
+
+    def encrypt_text(self):
+        input_text = self.input_text.get("1.0", tk.END).strip()
+        if 1 <= len(input_text) <= 20:
+            encrypted_text = encrypt_message(input_text, key)
+            self.result_text.delete("1.0", tk.END)
+            self.result_text.insert("1.0", encrypted_text)
+        else:
+            messagebox.showwarning("Warning!", "Ensure no less than 1 character and no more than 20 characters.")
+
+    def decrypt_text(self):
+        input_text = self.input_text.get("1.0", tk.END).strip()
+        if 1 <= len(input_text) <= 20:
+            decrypted_text = decrypt_message(input_text, key)
+            self.result_text.delete("1.0", tk.END)
+            self.result_text.insert("1.0", decrypted_text)
+        else:
+            messagebox.showwarning("Warning!", "Ensure no less than 1 character and no more than 20 characters.")
+ # Main frame for password generation, takes from lines 27-41.
+    def password_generator_page(self):
+        self.clear_frame()
+        password_frame = ttk.Frame(self)
+        password_frame.pack(pady=20)
+
+        ttk.Label(password_frame, text="Choose Your Password's Length (3-18):").pack(pady=5)
+        self.length_var = tk.IntVar(value=8)
+        ttk.Spinbox(password_frame, from_=3, to=18, textvariable=self.length_var).pack(pady=5)
+
+        self.uppercase_var = tk.BooleanVar()
+        self.lowercase_var = tk.BooleanVar()
+        self.numeric_var = tk.BooleanVar()
+        self.symbol_var = tk.BooleanVar()
+
+        ttk.Checkbutton(password_frame, text="Include Uppercase (A-Z)", variable=self.uppercase_var).pack(pady=2)
+        ttk.Checkbutton(password_frame, text="Include Lowercase (a-z)", variable=self.lowercase_var).pack(pady=2)
+        ttk.Checkbutton(password_frame, text="Include Numbers (0-9)", variable=self.numeric_var).pack(pady=2)
+        ttk.Checkbutton(password_frame, text="Include Symbols ($,#,&)", variable=self.symbol_var).pack(pady=2)
+
+        ttk.Label(password_frame, text="Generated Password:").pack(pady=5)
+        self.generated_password = tk.Entry(password_frame, width=40)
+        self.generated_password.pack(pady=5)
+
+        button_frame = ttk.Frame(password_frame)
+        button_frame.pack(pady=10)
+
+        ttk.Button(button_frame, text="Generate", command=self.generate_password).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Main Menu", command=self.main_menu).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Exit App", command=self.exit_app).pack(side=tk.LEFT, padx=5)
+# Password gen input warnings for improper character selection and amount (3-18 and uppercase, lowercase, numeric, symbol)
+    def generate_password(self):
+        length = self.length_var.get()
+        uppercase = self.uppercase_var.get()
+        lowercase = self.lowercase_var.get()
+        numeric = self.numeric_var.get()
+        symbol = self.symbol_var.get()
+
+        if not (uppercase or lowercase or numeric or symbol):
+            messagebox.showwarning("Warning!", "Select at least one character type. (Uppercase, Lowercase, Numeric, Symbol)")
+            return
+
+        if 3 <= length <= 18:
+            password = generate_password(length, uppercase, lowercase, numeric, symbol)
+            self.generated_password.delete(0, tk.END)
+            self.generated_password.insert(0, password)
+        else:
+            messagebox.showwarning("Warning!", "Ensure password length choice is between 3 and 18 characters.")
+
+    def clear_frame(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+
+    def exit_app(self):
+        self.destroy()
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
