@@ -1,4 +1,4 @@
-# AnswerZit Password Generator - Encrypt/Decryption App
+# AnswerZit Password Generator - Encrypt/Decryption Tool
 
 ## Description
 The goal of this project is to develop a secure and intuitive password-generating, encryption, and decryption Python software. It solves the issue of the lack of easily available, trustworthy solutions for creating secure passwords and safeguarding private data. Strong encryption is provided by the application to guarantee data security and secrecy, protecting users' private and business correspondence. By making the process of creating strong, secure passwords easier, automated password generation lowers the possibility of breaches brought on by reused or weak passwords.
